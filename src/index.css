@@ -1,0 +1,321 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* StudentConnect Design System - Professional, animated, modern */
+
+@layer base {
+  :root {
+    /* Royal color palette */
+    --primary: 252 95% 63%;        /* Royal Purple #7C3AED */
+    --primary-foreground: 0 0% 98%;
+    --primary-hover: 252 95% 55%;
+    --primary-light: 252 95% 85%;
+    
+    --secondary: 32 95% 50%;       /* Elegant Gold #F59E0B */
+    --secondary-foreground: 222.2 84% 4.9%;
+    --secondary-hover: 32 95% 45%;
+    
+    --accent: 215 16% 47%;         /* Refined Silver #64748B */
+    --accent-foreground: 0 0% 98%;
+    --accent-hover: 215 16% 40%;
+    --accent-light: 215 16% 85%;
+    
+    /* Status colors */
+    --success: 142 76% 36%;
+    --success-foreground: 355.7 100% 97.3%;
+    
+    --warning: 32 95% 44%;
+    --warning-foreground: 210 40% 98%;
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+    
+    /* Neutral colors - Ivory theme */
+    --background: 42 40% 98%;       /* Ivory #FDFCFB */
+    --foreground: 222.2 84% 4.9%;
+    
+    --card: 42 40% 98%;
+    --card-foreground: 222.2 84% 4.9%;
+    
+    --popover: 42 40% 98%;
+    --popover-foreground: 222.2 84% 4.9%;
+    
+    --muted: 42 20% 92%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    
+    --border: 42 20% 88%;
+    --input: 42 20% 88%;
+    --ring: 252 95% 63%;
+    
+    /* Royal gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(252 95% 63%), hsl(32 95% 50%));
+    --gradient-subtle: linear-gradient(180deg, hsl(42 40% 98%), hsl(42 20% 95%));
+    --gradient-royal: linear-gradient(135deg, hsl(252 95% 63%) 0%, hsl(32 95% 50%) 100%);
+    
+    /* Royal shadows */
+    --shadow-elegant: 0 10px 30px -10px hsl(252 95% 63% / 0.3);
+    --shadow-card: 0 4px 12px -2px hsl(252 95% 63% / 0.15);
+    --shadow-glow: 0 0 40px hsl(32 95% 50% / 0.4);
+    --shadow-royal: 0 8px 32px hsl(252 95% 63% / 0.2);
+
+    --radius: 0.75rem;
+
+    /* Sidebar */
+    --sidebar-background: 255 255 255;
+    --sidebar-foreground: 36 41 47;
+    --sidebar-primary: 212 92% 45%;
+    --sidebar-primary-foreground: 255 255 255;
+    --sidebar-accent: 220 14% 96%;
+    --sidebar-accent-foreground: 36 41 47;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 212 92% 45%;
+  }
+
+  .dark {
+    --background: 222 84% 5%;      /* Deep Navy #0F172A */
+    --foreground: 210 40% 98%;
+    
+    --card: 222 84% 6%;
+    --card-foreground: 210 40% 98%;
+    
+    --popover: 222 84% 6%;
+    --popover-foreground: 210 40% 98%;
+    
+    --primary: 252 95% 70%;        /* Brighter purple for dark mode */
+    --primary-foreground: 222 84% 5%;
+    --primary-hover: 252 95% 75%;
+    --primary-light: 252 95% 25%;
+    
+    --secondary: 32 95% 55%;       /* Brighter gold for dark mode */
+    --secondary-foreground: 222 84% 5%;
+    --secondary-hover: 32 95% 60%;
+    
+    --accent: 215 16% 55%;         /* Lighter silver for dark mode */
+    --accent-foreground: 222 84% 5%;
+    --accent-hover: 215 16% 60%;
+    --accent-light: 215 16% 30%;
+    
+    --success: 142 76% 40%;
+    --warning: 32 95% 50%;
+    --destructive: 0 84% 65%;
+    
+    --muted: 222 47% 11%;
+    --muted-foreground: 215 20.2% 65.1%;
+    
+    --border: 222 47% 11%;
+    --input: 222 47% 11%;
+    --ring: 252 95% 70%;
+    
+    /* Dark royal gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(252 95% 70%), hsl(32 95% 55%));
+    --gradient-subtle: linear-gradient(180deg, hsl(222 84% 5%), hsl(222 47% 11%));
+    --gradient-royal: linear-gradient(135deg, hsl(252 95% 70%) 0%, hsl(32 95% 55%) 100%);
+    
+    /* Dark royal shadows with golden glow */
+    --shadow-elegant: 0 10px 30px -10px hsl(32 95% 55% / 0.4);
+    --shadow-card: 0 4px 12px -2px hsl(252 95% 70% / 0.2);
+    --shadow-glow: 0 0 40px hsl(32 95% 55% / 0.6);
+    --shadow-royal: 0 8px 32px hsl(252 95% 70% / 0.3);
+
+    /* Dark Sidebar */
+    --sidebar-background: 22 27 34;
+    --sidebar-foreground: 230 237 243;
+    --sidebar-primary: 212 92% 54%;
+    --sidebar-primary-foreground: 13 17 23;
+    --sidebar-accent: 32 37 44;
+    --sidebar-accent-foreground: 230 237 243;
+    --sidebar-border: 32 37 44;
+    --sidebar-ring: 212 92% 54%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    transition: var(--transition-smooth);
+  }
+
+  /* Smooth transitions for theme switching */
+  *,
+  *::before,
+  *::after {
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  }
+}
+
+@layer components {
+  /* Gradient Backgrounds */
+  .bg-gradient-primary {
+    background: var(--gradient-primary);
+  }
+  
+  .bg-gradient-subtle {
+    background: var(--gradient-subtle);
+  }
+
+  /* Shadow Utilities */
+  .shadow-elegant {
+    box-shadow: var(--shadow-elegant);
+  }
+  
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+  
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+
+  /* Animation Classes */
+  .animate-float {
+    animation: var(--animation-float);
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.6s ease-out;
+  }
+
+  .animate-slide-in-right {
+    animation: slideInRight 0.6s ease-out;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.4s ease-out;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out;
+  }
+
+  /* Hover Effects */
+  .hover-lift {
+    transition: var(--transition-smooth);
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-elegant);
+  }
+
+  .hover-scale {
+    transition: var(--transition-bounce);
+  }
+  
+  .hover-scale:hover {
+    transform: scale(1.05);
+  }
+
+  /* Glass Effect */
+  .glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .dark .glass {
+    background: rgba(30, 41, 59, 0.3);
+    border: 1px solid rgba(248, 250, 252, 0.1);
+  }
+
+  /* Custom Button Variants */
+  .btn-primary {
+    @apply bg-primary text-primary-foreground shadow-card hover:shadow-elegant;
+    background: var(--gradient-primary);
+    transition: var(--transition-smooth);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-glow);
+  }
+
+  /* Loading Spinner */
+  .spinner {
+    animation: spin 1s linear infinite;
+  }
+
+  /* Notification Slide */
+  .notification-enter {
+    animation: slideInRight 0.4s ease-out;
+  }
+
+  .notification-exit {
+    animation: slideOutRight 0.4s ease-in;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
