@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, CheckCircle, AlertCircle, Info } from 'lucide-react';
+import { toast as sonnerToast } from '@/components/ui/sonner';
+import { BACKEND_URL, WS_BACKEND_URL } from '@/config';
 
 interface Notification {
   id: string;
@@ -26,20 +28,52 @@ export const NotificationSystem: React.FC<NotificationSystemProps> = ({ classNam
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   useEffect(() => {
+    // Local notification listener
     const listener = (notification: Notification) => {
       setNotifications(prev => [...prev, notification]);
-      
-      // Auto-remove after duration
       const duration = notification.duration || 4000;
       setTimeout(() => {
         setNotifications(prev => prev.filter(n => n.id !== notification.id));
       }, duration);
     };
-
     notificationListeners.push(listener);
-    
+
+    // --- WebSocket for real-time notifications ---
+    let ws: WebSocket | null = null;
+    let wsUrl = `${WS_BACKEND_URL}/ws/notifications`;
+
+    function connectWs(url: string) {
+      ws = new WebSocket(url);
+      ws.onmessage = (event) => {
+        // Assume backend sends a plain string or JSON with a 'message' field
+        let msg = event.data;
+        let title = 'Notification';
+        let message = msg;
+        let type: Notification['type'] = 'info';
+        try {
+          const parsed = JSON.parse(msg);
+          if (typeof parsed === 'object' && parsed.message) {
+            message = parsed.message;
+            if (parsed.title) title = parsed.title;
+            if (parsed.type) type = parsed.type;
+          }
+        } catch {}
+        // Prefer Sonner toast if available
+        if (typeof sonnerToast === 'function') {
+          sonnerToast(message, { description: title });
+        } else {
+          showNotification({ type, title, message });
+        }
+      };
+      ws.onerror = () => {
+        // Optionally handle error
+      };
+    }
+    connectWs(wsUrl);
+
     return () => {
       notificationListeners = notificationListeners.filter(l => l !== listener);
+      ws?.close();
     };
   }, []);
 

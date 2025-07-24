@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -90,6 +90,7 @@ const mockEvents: Event[] = [
 ];
 
 export const CalendarWidget: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
   const [events, setEvents] = useState<Event[]>(mockEvents);
@@ -235,14 +236,28 @@ export const CalendarWidget: React.FC = () => {
   const handleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
     setIsDragging(true);
-    
-    const handleMouseMove = (e: MouseEvent) => {
-      const containerWidth = window.innerWidth - 48; // Account for padding
-      const newWidth = containerWidth - e.clientX + 24; // Reverse calculation for right sidebar
-      const minWidth = isQuickCaptureMinimized ? 60 : 250;
-      const maxWidth = containerWidth * 0.6;
-      
-      setSidebarWidth(Math.max(minWidth, Math.min(maxWidth, newWidth)));
+
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+
+    // Record initial values
+    const startX = e.clientX;
+    const startSidebarWidth = sidebarWidth;
+
+    const minSidebarWidth = 250;
+    const minCalendarWidth = 350;
+
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      // Calculate how much the mouse has moved
+      const dx = startX - moveEvent.clientX;
+      let newSidebarWidth = startSidebarWidth + dx;
+
+      // Clamp the sidebar width
+      const maxSidebarWidth = rect.width - minCalendarWidth;
+      if (newSidebarWidth < minSidebarWidth) newSidebarWidth = minSidebarWidth;
+      if (newSidebarWidth > maxSidebarWidth) newSidebarWidth = maxSidebarWidth;
+
+      setSidebarWidth(newSidebarWidth);
     };
 
     const handleMouseUp = () => {
@@ -296,7 +311,7 @@ export const CalendarWidget: React.FC = () => {
       </Card>
 
       {/* Resizable Layout */}
-      <div className="relative flex gap-2 min-h-[600px]">
+      <div className="relative flex gap-2 min-h-[600px]" ref={containerRef}>
         {/* Calendar Section */}
         <motion.div 
           className="flex-1 min-w-0"

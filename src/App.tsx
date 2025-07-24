@@ -1,3 +1,10 @@
+// ===============================
+// App.tsx - Main Application Entry
+//
+// - Sets up global providers (theme, auth, query, tooltips)
+// - Handles routing for all pages
+// - Mounts global UI components (toasts, notifications, offline banner)
+// ===============================
 import React, { useState, useEffect } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -28,9 +35,16 @@ import { Analytics } from './pages/Analytics';
 import NotFound from "./pages/NotFound";
 import { OfflineBanner } from './components/OfflineBanner';
 
+// ===============================
+// Query Client Setup (React Query)
+// ===============================
 const queryClient = new QueryClient();
 
+// ===============================
+// Main App Component
+// ===============================
 const App = () => {
+  // Initial loading splash (simulated)
   const [initialLoading, setInitialLoading] = useState(true);
 
   useEffect(() => {
@@ -38,7 +52,6 @@ const App = () => {
     const timer = setTimeout(() => {
       setInitialLoading(false);
     }, 2000);
-
     return () => clearTimeout(timer);
   }, []);
 
@@ -47,97 +60,38 @@ const App = () => {
   }
 
   return (
+    // ===============================
+    // Global Providers
+    // ===============================
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <ThemeProvider>
           <AuthProvider>
             <BrowserRouter>
               <div className="min-h-screen">
+                {/* ===============================
+                    Routing (Public & Protected)
+                   =============================== */}
                 <Routes>
                   {/* Public Routes */}
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
-                  
                   {/* Protected Routes */}
-                  <Route
-                    path="/dashboard"
-                    element={
-                      <ProtectedRoute>
-                        <Layout>
-                          <Dashboard />
-                        </Layout>
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/tasks"
-                    element={
-                      <ProtectedRoute>
-                        <Layout>
-                          <Tasks />
-                        </Layout>
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/notes"
-                    element={
-                      <ProtectedRoute>
-                        <Layout>
-                          <Notes />
-                        </Layout>
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/profile"
-                    element={
-                      <ProtectedRoute>
-                        <Layout>
-                          <Profile />
-                        </Layout>
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/settings"
-                    element={
-                      <ProtectedRoute>
-                        <Layout>
-                          <Settings />
-                        </Layout>
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/groups"
-                    element={
-                      <ProtectedRoute>
-                        <Layout>
-                          <Groups />
-                        </Layout>
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/analytics"
-                    element={
-                      <ProtectedRoute>
-                        <Layout>
-                          <Analytics />
-                        </Layout>
-                      </ProtectedRoute>
-                    }
-                  />
-                  
+                  <Route path="/dashboard" element={<ProtectedRoute><Layout><Dashboard /></Layout></ProtectedRoute>} />
+                  <Route path="/tasks" element={<ProtectedRoute><Layout><Tasks /></Layout></ProtectedRoute>} />
+                  <Route path="/notes" element={<ProtectedRoute><Layout><Notes /></Layout></ProtectedRoute>} />
+                  <Route path="/profile" element={<ProtectedRoute><Layout><Profile /></Layout></ProtectedRoute>} />
+                  <Route path="/settings" element={<ProtectedRoute><Layout><Settings /></Layout></ProtectedRoute>} />
+                  <Route path="/groups" element={<ProtectedRoute><Layout><Groups /></Layout></ProtectedRoute>} />
+                  <Route path="/analytics" element={<ProtectedRoute><Layout><Analytics /></Layout></ProtectedRoute>} />
                   {/* Root redirect */}
                   <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                  
                   {/* 404 catch-all */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
-                
-                {/* Global Components */}
+                {/* ===============================
+                    Global UI Components
+                   =============================== */}
                 <OfflineBanner />
                 <NotificationSystem />
                 <Toaster />
@@ -151,4 +105,7 @@ const App = () => {
   );
 };
 
+// ===============================
+// Export Main App
+// ===============================
 export default App;
