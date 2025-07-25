@@ -46,6 +46,52 @@ export const Groups: React.FC = () => {
   const ws = useRef<WebSocket | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // ===============================
+  // Group Creation Form with Advanced Validation
+  // ===============================
+  const groupNameRegex = /^[A-Za-z0-9 ]{3,30}$/;
+  const groupDescRegex = /^.{10,100}$/;
+
+  const [newGroupName, setNewGroupName] = useState('');
+  const [newGroupDesc, setNewGroupDesc] = useState('');
+  const [groupNameError, setGroupNameError] = useState('');
+  const [groupDescError, setGroupDescError] = useState('');
+  const [groups, setGroups] = useState<Group[]>(mockGroups);
+
+  const validateGroupName = (name: string) => {
+    if (!groupNameRegex.test(name)) {
+      setGroupNameError('Name must be 3-30 letters, numbers, or spaces.');
+      return false;
+    }
+    setGroupNameError('');
+    return true;
+  };
+  const validateGroupDesc = (desc: string) => {
+    if (!groupDescRegex.test(desc)) {
+      setGroupDescError('Description must be 10-100 characters.');
+      return false;
+    }
+    setGroupDescError('');
+    return true;
+  };
+  const isGroupFormValid = () => validateGroupName(newGroupName) && validateGroupDesc(newGroupDesc);
+
+  const handleAddGroup = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isGroupFormValid()) return;
+    const newGroup: Group = {
+      id: newGroupName.toLowerCase().replace(/\s+/g, ''),
+      name: newGroupName,
+      description: newGroupDesc,
+    };
+    setGroups(prev => [...prev, newGroup]);
+    setNewGroupName('');
+    setNewGroupDesc('');
+    setGroupNameError('');
+    setGroupDescError('');
+    setSelectedGroup(newGroup);
+  };
+
   // # Effect to connect to WebSocket when a group is selected
   useEffect(() => {
     if (selectedGroup) {
@@ -151,6 +197,33 @@ export const Groups: React.FC = () => {
           animate={{ opacity: 1, x: 0 }}
           className="w-1/3"
         >
+          <Card className="mb-4 p-4 shadow-card">
+            <form onSubmit={handleAddGroup} className="space-y-2">
+              <Input
+                placeholder="Group Name"
+                value={newGroupName}
+                onChange={e => {
+                  setNewGroupName(e.target.value);
+                  validateGroupName(e.target.value);
+                }}
+                maxLength={30}
+                required
+              />
+              {groupNameError && <div className="text-destructive text-xs">{groupNameError}</div>}
+              <Input
+                placeholder="Description"
+                value={newGroupDesc}
+                onChange={e => {
+                  setNewGroupDesc(e.target.value);
+                  validateGroupDesc(e.target.value);
+                }}
+                maxLength={100}
+                required
+              />
+              {groupDescError && <div className="text-destructive text-xs">{groupDescError}</div>}
+              <Button type="submit" disabled={!isGroupFormValid()} className="w-full">Create Group</Button>
+            </form>
+          </Card>
           <Card className="h-full shadow-card">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -158,7 +231,7 @@ export const Groups: React.FC = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              {mockGroups.map((group) => (
+              {groups.map((group) => (
                 <div
                   key={group.id}
                   onClick={() => setSelectedGroup(group)}

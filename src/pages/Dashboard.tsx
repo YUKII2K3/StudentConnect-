@@ -102,8 +102,57 @@ export const Dashboard: React.FC = () => {
     });
   };
 
+  // ===============================
+  // Motivational Quote Card (External API Integration)
+  // ===============================
+  const [quote, setQuote] = useState<{ content: string; author: string } | null>(null);
+  const [quoteLoading, setQuoteLoading] = useState(false);
+  const [quoteError, setQuoteError] = useState('');
+
+  const fetchQuote = async () => {
+    setQuoteLoading(true);
+    setQuoteError('');
+    try {
+      const res = await fetch('https://api.quotable.io/random');
+      if (!res.ok) throw new Error('Failed to fetch quote');
+      const data = await res.json();
+      setQuote({ content: data.content, author: data.author });
+    } catch (err) {
+      setQuoteError('Could not load quote.');
+    } finally {
+      setQuoteLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchQuote();
+  }, []);
+
   return (
     <div className="container mx-auto px-4 py-8">
+      <div className="mb-6">
+        <Card className="bg-accent/10 border-0 shadow-none">
+          <CardContent className="flex flex-col items-center py-6">
+            {quoteLoading ? (
+              <span className="text-muted-foreground">Loading quote...</span>
+            ) : quoteError ? (
+              <span className="text-destructive">{quoteError}</span>
+            ) : quote ? (
+              <>
+                <div className="text-lg italic text-center mb-2">"{quote.content}"</div>
+                <div className="text-sm text-muted-foreground mb-2">— {quote.author}</div>
+              </>
+            ) : null}
+            <button
+              className="mt-2 px-3 py-1 rounded bg-primary text-primary-foreground hover:bg-primary/90 text-xs"
+              onClick={fetchQuote}
+              disabled={quoteLoading}
+            >
+              {quoteLoading ? 'Refreshing...' : 'New Quote'}
+            </button>
+          </CardContent>
+        </Card>
+      </div>
       <div className="mb-8">
         <h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">
           Welcome back, {user?.name}! 👋
